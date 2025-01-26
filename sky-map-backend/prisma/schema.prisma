@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Star {
+  id             Int           @id @default(autoincrement())
+  hip            Int
+  hd             Int
+  hr             Int
+  gl             Int
+  bf             String
+  ra             Float
+  dec            Float
+  dist           Float
+  pmra           Float
+  pmdec          Float
+  rv             Float
+  mag            Float
+  absmag         Float
+  spect          String
+  ci             Float
+  x              Float
+  y              Float
+  z              Float
+  vx             Float
+  vy             Float
+  vz             Float
+  rarad          Float
+  decrad         Float
+  pmrarad        Float
+  prdecrad       Float
+  lum            Float
+  var            String
+  var_min        Float
+  var_max        Float
+  constellation  Constellation? @relation(fields: [constellationId], references: [id]) // Relation fixée
+
+  constellationId Int? // Clé étrangère pour la relation avec Constellation
+}
+
+model Constellation {
+  id    Int    @id @default(autoincrement())
+  name  String
+  stars Star[] // Relation avec plusieurs étoiles
+}

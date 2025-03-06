@@ -3,7 +3,7 @@ import { StarsService } from './stars.service';
 
 @Controller('stars')
 export class StarsController {
-  constructor(private starsService: StarsService) {}
+  constructor(private starsService: StarsService) { }
 
   // Récupère les 50 étoiles les plus proches visibles à l'œil nu (magnitude < 6)
   @Get('nearest-visible')
@@ -28,4 +28,17 @@ export class StarsController {
   getStarDetails(@Param('id') id: string) {
     return this.starsService.getStarDetails(parseInt(id));
   }
+
+  // Récupère les 15 étoiles les plus chaudes (basé sur le type spectral)
+  @Get('hottest')
+  getHottestStars() {
+    return this.starsService.getHottestStars();
+  }
+
+  // Récupère les 15 étoiles les plus grosses (basé sur la luminosité comme proxy de taille)
+  @Get('largest')
+  getLargestStars() {
+    return this.starsService.getLargestStars();
+  }
+
 }

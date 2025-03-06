@@ -3,7 +3,7 @@ import { PrismaService } from 'prisma/prisma.service';
 
 @Injectable()
 export class StarsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   // Récupère les 50 étoiles les plus proches de la Terre visibles à l'œil nu
   // Une étoile est visible à l'œil nu si sa magnitude < 6
@@ -60,4 +60,44 @@ export class StarsService {
       },
     });
   }
+
+  // Récupère les 15 étoiles les plus chaudes (basé sur le type spectral)
+  async getHottestStars() {
+    const stars = await this.prisma.star.findMany({
+      where: {
+        ci: { gt: -9999 }, // Filtre qui ignore les `NULL`
+      },
+      orderBy: {
+        ci: 'asc', // Les étoiles les plus chaudes ont un `ci` faible (négatif ou proche de 0)
+      },
+      take: 15,
+      include: {
+        constellation: true,
+      },
+    });
+
+    return stars;
+  }
+
+
+  // Récupère les 15 étoiles les plus grosses (basé sur la luminosité comme proxy de taille)
+  async getLargestStars() {
+    const stars = await this.prisma.star.findMany({
+      where: {
+        lum: { gt: 0 }, // Ignorer les étoiles sans luminosité
+      },
+      orderBy: {
+        lum: 'desc', // Trier par luminosité décroissante
+      },
+      take: 15,
+      include: {
+        constellation: true,
+      },
+    });
+
+    console.log("🌟 Largest Stars:", stars);
+    return stars;
+  }
+
+
 }
